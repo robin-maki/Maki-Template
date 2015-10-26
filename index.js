@@ -1,7 +1,7 @@
 var fs = require("fs");
 var cheerio = require("cheerio");
 var clone = require("clone");
-var format = require("format");
+var format = require("string-format");
 
 global.MAKI_PREFIX = "maki-";
 
