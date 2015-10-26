@@ -6,6 +6,20 @@ global.MAKI_PREFIX = "maki-";
 function withPrefix(str) {
 	return global.MAKI_PREFIX + str;
 }
+function getValue(scope, attr) {
+	with(scope) {
+		var res;
+		try {
+			res = eval(attr);
+		}
+		catch (er) {
+			res = null;
+		}
+		finally {
+			return res;
+		}
+	}
+}
 exports.render = function (str, data, callback) {
 	if(typeof data == "function") {
 		callback = data;
@@ -14,7 +28,7 @@ exports.render = function (str, data, callback) {
 	try {
 		var $ = cheerio.load(str);
 		$("[" + withPrefix("render") + "]").each(function () {
-			if(!eval.call(data, $(this).attr(withPrefix("render")))) {
+			if(!getValue(data, $(this).attr(withPrefix("render")))) {
 				$(this).remove();
 			}
 			else {
