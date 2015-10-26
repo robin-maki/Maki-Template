@@ -39,3 +39,6 @@ exports.renderFile = function (path, data, callback) {
 	});
 };
 exports.__express = exports.renderFile;
+exports.init = function (app) {
+	app.engine("maki", exports.renderFile);
+};
