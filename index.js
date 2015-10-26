@@ -1,6 +1,7 @@
 var fs = require("fs");
 var cheerio = require("cheerio");
 var clone = require("clone");
+var format = require("format");
 
 global.MAKI_PREFIX = "maki-";
 
@@ -54,10 +55,8 @@ exports.render = function (str, data, callback, viewContent) {
 			}
 			$(this).replaceWith(result);
 		});
-		$(withPrefix("str")).each(function () {
-			$(this).replaceWith(getValue(data, $(this).text()) || "");
-		});
-		// TODO need additional parsing
+		$.html(format($.html(), data));
+		// TODO insert additional parser here
 		if($(withPrefix("view")).length) {
 			if(viewContent) {
 				$(withPrefix("view")).replaceWith(viewContent);
