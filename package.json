@@ -1,6 +1,6 @@
 {
   "name": "maki-templete",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "HTML-Style Express.js rendering engine",
   "main": "index.js",
   "scripts": {
