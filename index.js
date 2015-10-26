@@ -1,5 +1,6 @@
 var fs = require("fs");
 var cheerio = require("cheerio");
+var clone = require("clone");
 
 global.MAKI_PREFIX = "maki-";
 
@@ -20,7 +21,7 @@ function getValue(scope, attr) {
 		}
 	}
 }
-exports.render = function (str, data, callback) {
+exports.render = function (str, data, callback, viewContent) {
 	if(typeof data == "function") {
 		callback = data;
 		data = undefined;
@@ -35,8 +36,45 @@ exports.render = function (str, data, callback) {
 				$(this).removeAttr(withPrefix("render"));
 			}
 		});
+		$(withPrefix("repeat")).each(function () {
+			var target = getValue(data, $(this).attr("target")),
+				name = getValue(data, $(this).attr("value")),
+				content = $(this).html(),
+				result = "";
+			if(typeof target == "Array") {
+				target.forEach(function (val) {
+					var tempData = clone(data);
+					tempData[name] = val;
+					exports.render(content, tempData, function (err, res) {
+						if(!err) {
+							result += res;
+						}
+					});
+				});
+			}
+			$(this).replaceWith(result);
+		});
+		$(withPrefix("data")).each(function () {
+			$(this).replaceWith(getValue(data, $(this).attr("value")) || "");
+		});
 		// TODO need additional parsing
-		return callback(null, $.html());
+		if($(withPrefix("view")).length) {
+			if(viewContent) {
+				$(withPrefix("view")).replaceWith(viewContent);
+			}
+			else {
+				$(withPrefix("view")).remove();
+			}
+		}
+		if($(withPrefix("layout")).length) {
+			exports.renderFile($(withPrefix("layout")).attr("src"), data, function (err, res) {
+				callback(null, res);
+			}, $.html());
+			return null;
+		}
+		else {
+			return callback(null, $.html());
+		}
 	}
 	catch (er) {
 		return callback(er);
