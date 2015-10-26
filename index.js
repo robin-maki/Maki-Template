@@ -55,7 +55,6 @@ exports.render = function (str, data, callback, viewContent) {
 			}
 			$(this).replaceWith(result);
 		});
-		$.html(format($.html(), data));
 		// TODO insert additional parser here
 		if($(withPrefix("view")).length) {
 			if(viewContent) {
@@ -68,11 +67,11 @@ exports.render = function (str, data, callback, viewContent) {
 		if($(withPrefix("layout")).length) {
 			exports.renderFile($(withPrefix("layout")).attr("src"), data, function (err, res) {
 				callback(null, res);
-			}, $.html());
+			}, format($.html(), data));
 			return null;
 		}
 		else {
-			return callback(null, $.html());
+			return callback(null, format($.html(), data));
 		}
 	}
 	catch (er) {
