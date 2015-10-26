@@ -54,8 +54,8 @@ exports.render = function (str, data, callback, viewContent) {
 			}
 			$(this).replaceWith(result);
 		});
-		$(withPrefix("data")).each(function () {
-			$(this).replaceWith(getValue(data, $(this).attr("value")) || "");
+		$(withPrefix("str")).each(function () {
+			$(this).replaceWith(getValue(data, $(this).text()) || "");
 		});
 		// TODO need additional parsing
 		if($(withPrefix("view")).length) {
