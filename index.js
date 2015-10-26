@@ -13,12 +13,12 @@ exports.render = function (str, data, callback) {
 	}
 	try {
 		var $ = cheerio.load(str);
-		$("[" + withPrefix("render") + "]").each(function (i, elem) {
-			if(!eval.call(data, elem.attr("cond"))) {
-				elem.remove();
+		$("[" + withPrefix("render") + "]").each(function () {
+			if(!eval.call(data, $(this).attr(withPrefix("render")))) {
+				$(this).remove();
 			}
 			else {
-				elem.removeAttr("cond");
+				$(this).removeAttr(withPrefix("render"));
 			}
 		});
 		// TODO need additional parsing
