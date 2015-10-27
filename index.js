@@ -70,7 +70,9 @@ exports.render = function (str, data, callback, viewContent) {
 			}
 		}
 		if($(withPrefix("layout")).length) {
-			exports.renderFile($(withPrefix("layout")).attr("src"), data, function (err, res) {
+			var layoutSrc = $(withPrefix("layout")).attr("src");
+			$(withPrefix("layout")).remove();
+			exports.renderFile(layoutSrc, data, function (err, res) {
 				callback(null, res);
 			}, format($.html(), data));
 			return null;
