@@ -81,6 +81,9 @@ exports.render = function (str, data, callback, viewContent) {
 	}
 };
 exports.renderFile = function (path, data, callback) {
+	if(path.split(".").length < 1) {
+		path += ".maki";
+	}
 	fs.readFile(path, function (err, dat) {
 		if(!err) {
 			exports.render(dat, data, callback);
