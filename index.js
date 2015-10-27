@@ -83,13 +83,13 @@ exports.render = function (str, data, callback, viewContent) {
 		return callback(er);
 	}
 };
-exports.renderFile = function (src, data, callback) {
+exports.renderFile = function (src, data, callback, viewContent) {
 	if(src.split(".").length < 1) {
 		src += ".maki";
 	}
 	fs.readFile(path.resolve(viewPath, src), function (err, dat) {
 		if(!err) {
-			exports.render(dat, data, callback);
+			exports.render(dat, data, callback, viewContent);
 		}
 		else {
 			callback(err);
