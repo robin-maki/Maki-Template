@@ -2,6 +2,7 @@ var fs = require("fs");
 var cheerio = require("cheerio");
 var clone = require("clone");
 var path = require("path");
+var format = require("string-format");
 
 global.MAKI_PREFIX = "maki-";
 var viewPath = "./views";
@@ -71,11 +72,11 @@ exports.render = function (str, data, callback, viewContent) {
 		if($(withPrefix("layout")).length) {
 			exports.renderFile($(withPrefix("layout")).attr("src"), data, function (err, res) {
 				callback(null, res);
-			}, $.html());
+			}, format($.html(), data));
 			return null;
 		}
 		else {
-			return callback(null, $.html());
+			return callback(null, format($.html(), data));
 		}
 	}
 	catch (er) {
