@@ -1,7 +1,6 @@
 var fs = require("fs");
 var cheerio = require("cheerio");
 var clone = require("clone");
-var format = require("string-format");
 
 global.MAKI_PREFIX = "maki-";
 
@@ -55,7 +54,10 @@ exports.render = function (str, data, callback, viewContent) {
 			}
 			$(this).replaceWith(result);
 		});
-		// TODO insert additional parser here
+		$(withPrefix("val")).each(function () {
+			$(this).replaceWith(getValue(data, $(this).text()) || "");
+		});
+		// TODO need additional parsing
 		if($(withPrefix("view")).length) {
 			if(viewContent) {
 				$(withPrefix("view")).replaceWith(viewContent);
@@ -67,11 +69,11 @@ exports.render = function (str, data, callback, viewContent) {
 		if($(withPrefix("layout")).length) {
 			exports.renderFile($(withPrefix("layout")).attr("src"), data, function (err, res) {
 				callback(null, res);
-			}, format($.html(), data));
+			}, $.html());
 			return null;
 		}
 		else {
-			return callback(null, format($.html(), data));
+			return callback(null, $.html());
 		}
 	}
 	catch (er) {
