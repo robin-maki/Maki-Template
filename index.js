@@ -1,8 +1,10 @@
 var fs = require("fs");
 var cheerio = require("cheerio");
 var clone = require("clone");
+var path = require("path");
 
 global.MAKI_PREFIX = "maki-";
+var viewPath = "./views";
 
 function withPrefix(str) {
 	return global.MAKI_PREFIX + str;
@@ -80,11 +82,11 @@ exports.render = function (str, data, callback, viewContent) {
 		return callback(er);
 	}
 };
-exports.renderFile = function (path, data, callback) {
-	if(path.split(".").length < 1) {
-		path += ".maki";
+exports.renderFile = function (src, data, callback) {
+	if(src.split(".").length < 1) {
+		src += ".maki";
 	}
-	fs.readFile(path, function (err, dat) {
+	fs.readFile(viewPath + path.sep + src, function (err, dat) {
 		if(!err) {
 			exports.render(dat, data, callback);
 		}
@@ -96,4 +98,5 @@ exports.renderFile = function (path, data, callback) {
 exports.__express = exports.renderFile;
 exports.init = function (app) {
 	app.engine("maki", exports.renderFile);
+	viewPath = app.get("views");
 };
