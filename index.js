@@ -49,17 +49,15 @@ exports.render = function (str, data, callback, viewContent) {
 				name = $(this).attr("value"),
 				content = $(this).html(),
 				result = "";
-			if(typeof target == "Array") {
-				target.forEach(function (val) {
-					var tempData = clone(data);
-					tempData[name] = val;
-					exports.render(content, tempData, function (err, res) {
-						if(!err) {
-							result += res;
-						}
-					});
+			target.forEach(function (val) {
+				var tempData = clone(data);
+				tempData[name] = val;
+				exports.render(content, tempData, function (err, res) {
+					if(!err) {
+						result += res;
+					}
 				});
-			}
+			});
 			$(this).replaceWith(result);
 		});
 		// TODO need additional parsing
