@@ -2,7 +2,6 @@ var fs = require("fs");
 var cheerio = require("cheerio");
 var clone = require("clone");
 var path = require("path");
-var format = require("string-format");
 
 global.MAKI_PREFIX = "maki-";
 var viewPath = "./views";
@@ -23,6 +22,11 @@ function getValue(scope, attr) {
 			return res;
 		}
 	}
+}
+function format(str, data) {
+	str.replace(/[{][{](.+?)[}][}]/, function (attr) {
+		return getValue(data, attr);
+	});
 }
 exports.render = function (str, data, callback, viewContent) {
 	if(typeof data == "function") {
@@ -56,9 +60,6 @@ exports.render = function (str, data, callback, viewContent) {
 				});
 			}
 			$(this).replaceWith(result);
-		});
-		$(withPrefix("val")).each(function () {
-			$(this).replaceWith(getValue(data, $(this).text()) || "");
 		});
 		// TODO need additional parsing
 		if($(withPrefix("view")).length) {
