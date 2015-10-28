@@ -24,7 +24,7 @@ function getValue(scope, attr) {
 	}
 }
 function format(str, data) {
-	return str.replace(/[{](.+?)[}]/, function (attr) {
+	return str.replace(/[{](.+?)[}]/g, function (attr) {
 		return getValue(data, attr);
 	});
 }
