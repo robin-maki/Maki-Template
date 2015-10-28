@@ -2,6 +2,7 @@ var fs = require("fs");
 var cheerio = require("cheerio");
 var clone = require("clone");
 var path = require("path");
+var es = require("./lib/html-escape");
 
 global.MAKI_PREFIX = "maki-";
 var viewPath = "./views";
@@ -13,7 +14,7 @@ function getValue(scope, attr) {
 	with(scope) {
 		var res;
 		try {
-			res = eval(attr);
+			res = eval(es.unEscape(attr));
 		}
 		catch (er) {
 			res = null;
@@ -25,7 +26,7 @@ function getValue(scope, attr) {
 }
 function format(str, data) {
 	return str.replace(/[{](.+?)[}]/g, function (attr) {
-		return getValue(data, attr);
+		return es.escape(getValue(data, attr));
 	});
 }
 exports.render = function (str, data, callback, viewContent) {
@@ -45,7 +46,7 @@ exports.render = function (str, data, callback, viewContent) {
 		});
 		$(withPrefix("repeat")).each(function () {
 			var target = getValue(data, $(this).attr("target")),
-				name = getValue(data, $(this).attr("value")),
+				name = $(this).attr("value"),
 				content = $(this).html(),
 				result = "";
 			if(typeof target == "Array") {
