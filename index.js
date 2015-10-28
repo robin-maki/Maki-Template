@@ -24,9 +24,10 @@ function getValue(scope, attr) {
 	}
 }
 function format(str, data) {
-	str.replace(/[{][{](.+?)[}][}]/, function (attr) {
+	str.replace(/[{](.+?)[}]/, function (attr) {
 		return getValue(data, attr);
 	});
+	return str;
 }
 exports.render = function (str, data, callback, viewContent) {
 	if(typeof data == "function") {
