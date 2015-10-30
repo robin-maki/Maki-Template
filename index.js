@@ -44,6 +44,17 @@ exports.render = function (str, data, callback, viewContent) {
 				$(this).removeAttr(withPrefix("render"));
 			}
 		});
+		$(withPrefix("switch")).each(function () {
+			var th = $(this),
+				value = getValue(data, th.attr("target"));
+			var res = th.find(withPrefix("case") + "[value=" + value + "]");
+			if(res.length) {
+				th.replaceWith(res);
+			}
+			else {
+				th.replaceWith(th.find(withPrefix("default")));
+			}
+		});
 		$(withPrefix("repeat")).each(function () {
 			var target = getValue(data, $(this).attr("target")),
 				name = $(this).attr("value"),
