@@ -28,7 +28,7 @@ function format(str, data) {
 exports.render = function (str, data, callback, viewContent) {
 	var $;
 	try {
-		if(typeof str == "String" || typeof str == "Buffer") {
+		if(typeof str != "Function") {
 			$ = cheerio.load(str);
 		}
 		else {
@@ -71,17 +71,17 @@ exports.render = function (str, data, callback, viewContent) {
 				// TODO need additional parsing
 			}
 		});
-		if($(withPrefix("view")).length) {
+		if($("maki-view").length) {
 			if(viewContent) {
-				$(withPrefix("view")).replaceWith(viewContent);
+				$("maki-view").replaceWith(viewContent);
 			}
 			else {
-				$(withPrefix("view")).remove();
+				$("maki-view").remove();
 			}
 		}
-		if($(withPrefix("layout")).length) {
-			var layoutSrc = $(withPrefix("layout")).attr("src");
-			$(withPrefix("layout")).remove();
+		if($("maki-layout").length) {
+			var layoutSrc = $("maki-layout").attr("src");
+			$("maki-layout").remove();
 			exports.renderFile(layoutSrc, data, function (err, res) {
 				callback(null, res);
 			}, format($.html(), data));
