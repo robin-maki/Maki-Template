@@ -26,14 +26,8 @@ function format(str, data) {
 	});
 }
 exports.render = function (str, data, callback, viewContent) {
-	var $;
 	try {
-		if(typeof str != "Function") {
-			$ = cheerio.load(str);
-		}
-		else {
-			$ = str;
-		}
+		var $ = cheerio.load(str);
 		$("maki-if,maki-switch,maki-each").each(function () {
 			var th = $(this);
 			switch(this.name) {
@@ -62,7 +56,7 @@ exports.render = function (str, data, callback, viewContent) {
 					var copyData = clone(data);
 					for(var i = 0;i < targetLength;i++) {
 						copyData[name] = target[i];
-						exports.render(th.children(), copyData, function (err, res) {
+						exports.render(th.html(), copyData, function (err, res) {
 							result += res;
 						});
 					}
