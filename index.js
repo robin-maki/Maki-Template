@@ -36,7 +36,7 @@ exports.render = function (str, data, callback, viewContent) {
 		}
 		$("maki-if,maki-switch,maki-each").each(function () {
 			var th = $(this);
-			switch(th.tagName) {
+			switch(this.name) {
 				case "maki-if":
 					if(!getValue(data, th.attr("cond"))) {
 						th.remove();
