@@ -28,7 +28,7 @@ function format(str, data) {
 exports.render = function (str, data, callback, viewContent) {
 	var $;
 	try {
-		if(typeof str == "String") {
+		if(typeof str == "String" || typeof str == "Buffer") {
 			$ = cheerio.load(str);
 		}
 		else {
