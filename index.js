@@ -4,12 +4,8 @@ var clone = require("clone");
 var path = require("path");
 var es = require("./lib/html-escape");
 
-global.MAKI_PREFIX = "maki-";
 var viewPath = "./views";
 
-function withPrefix(str) {
-	return global.MAKI_PREFIX + str;
-}
 function getValue(scope, attr) {
 	with(scope) {
 		var res;
@@ -30,48 +26,51 @@ function format(str, data) {
 	});
 }
 exports.render = function (str, data, callback, viewContent) {
-	if(typeof data == "function") {
-		callback = data;
-		data = undefined;
-	}
+	var $;
 	try {
-		var $ = cheerio.load(str);
-		$("[" + withPrefix("render") + "]").each(function () {
-			if(!getValue(data, $(this).attr(withPrefix("render")))) {
-				$(this).remove();
-			}
-			else {
-				$(this).removeAttr(withPrefix("render"));
-			}
-		});
-		$(withPrefix("switch")).each(function () {
-			var th = $(this),
-				value = getValue(data, th.attr("target"));
-			var res = th.find(withPrefix("case") + "[value=" + value + "]");
-			if(res.length) {
-				th.replaceWith(res);
-			}
-			else {
-				th.replaceWith(th.find(withPrefix("default")));
-			}
-		});
-		$(withPrefix("repeat")).each(function () {
-			var target = getValue(data, $(this).attr("target")),
-				name = $(this).attr("value"),
-				content = $(this).html(),
-				result = "";
-			target.forEach(function (val) {
-				var tempData = clone(data);
-				tempData[name] = val;
-				exports.render(content, tempData, function (err, res) {
-					if(!err) {
-						result += res;
+		if(typeof str == "String") {
+			$ = cheerio.load(str);
+		}
+		else {
+			$ = str;
+		}
+		$("maki-if,maki-switch,maki-each").each(function () {
+			var th = $(this);
+			switch(th.tagName) {
+				case "maki-if":
+					if(!getValue(data, th.attr("cond"))) {
+						th.remove();
 					}
-				});
-			});
-			$(this).replaceWith(result);
+					else {
+						th.replaceWith(th.children());
+					}
+				break;
+				case "maki-switch":
+					var res = th.find("maki-case[value=" + getValue(data, th.attr("target")) + "]");
+					if(res.length) {
+						th.replaceWith(res);
+					}
+					else {
+						th.replaceWith(th.find("maki-default").children());
+					}
+				break;
+				case "maki-each":
+					var target = getValue(data, th.attr("target"));
+					var name = th.attr("value");
+					var result = "";
+					var targetLength = target.length;
+					var copyData = clone(data);
+					for(var i = 0;i < targetLength;i++) {
+						copyData[name] = target[i];
+						exports.render(th.children(), copyData, function (err, res) {
+							result += res;
+						});
+					}
+					th.replaceWith(result);
+				break;
+				// TODO need additional parsing
+			}
 		});
-		// TODO need additional parsing
 		if($(withPrefix("view")).length) {
 			if(viewContent) {
 				$(withPrefix("view")).replaceWith(viewContent);
