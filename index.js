@@ -42,7 +42,7 @@ exports.render = function (str, data, callback, viewContent) {
 				case "maki-switch":
 					var res = th.find("maki-case[value=" + getValue(data, th.attr("target")) + "]");
 					if(res.length) {
-						th.replaceWith(res);
+						th.replaceWith(res.contents());
 					}
 					else {
 						th.replaceWith(th.find("maki-default").children());
