@@ -82,6 +82,9 @@ exports.render = function (str, data, callback, viewContent) {
 				}, format($.html(), data));
 				return null;
 			}
+			else {
+				return callback(null, format($.html(), data));
+			}
 		}
 		else {
 			return callback(null, format($.html(), data));
