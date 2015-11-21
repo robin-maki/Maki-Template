@@ -76,10 +76,12 @@ exports.render = function (str, data, callback, viewContent) {
 		if($("maki-layout").length) {
 			var layoutSrc = $("maki-layout").attr("src");
 			$("maki-layout").remove();
-			exports.renderFile(layoutSrc, data, function (err, res) {
-				callback(null, res);
-			}, format($.html(), data));
-			return null;
+			if(!data.ignoreLayout) {
+				exports.renderFile(layoutSrc, data, function (err, res) {
+					callback(null, res);
+				}, format($.html(), data));
+				return null;
+			}
 		}
 		else {
 			return callback(null, format($.html(), data));
