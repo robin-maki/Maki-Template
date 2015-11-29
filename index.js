@@ -2,6 +2,7 @@ var fs = require("fs");
 var cheerio = require("cheerio");
 var clone = require("clone");
 var path = require("path");
+var minify = require("html-minifier").minify;
 var es = require("./lib/html-escape");
 
 var viewPath = "./views";
@@ -21,9 +22,9 @@ function getValue(scope, attr) {
 	}
 }
 function format(str, data) {
-	return str.replace(/[{](.+?)[}]/g, function (attr) {
+	return minify(str.replace(/[{](.+?)[}]/g, function (attr) {
 		return es.escape(getValue(data, attr));
-	});
+	}), {removeComments: true});
 }
 exports.render = function (str, data, callback, viewContent) {
 	try {
