@@ -22,7 +22,7 @@ function getValue(scope, attr) {
 	}
 }
 function format(str, data) {
-	return minify(str.replace(/[{{](.+?)[}}]/g, function (attr) {
+	return minify(str.replace(/[{]{2}(.+?)[}]{2}/g, function (attr) {
 		return es.escape(getValue(data, attr));
 	}), {removeComments: true});
 }
