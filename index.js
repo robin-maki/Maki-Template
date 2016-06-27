@@ -14,7 +14,7 @@ function getValue(scope, attr) {
 			res = eval(es.unEscape(attr));
 		}
 		catch (er) {
-			res = null;
+			res = '';
 		}
 		finally {
 			return res;
